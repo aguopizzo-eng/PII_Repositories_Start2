@@ -1,0 +1,33 @@
+{
+    "cSpell.enabled": true,
+    "cSpell.language": "en,es",
+    "cSpell.words": [
+        "buildtransitive",
+        "contentfiles",
+        "dotnet",
+        "Doxify",
+        "Doxyfile",
+        "github",
+        "jimny",
+        "Jimny",
+        "LINQ",
+        "Liskov",
+        "msbuild",
+        "nunit",
+        "Onix",
+        "preconfiguradas",
+        "Pseudocódigo",
+        "Sandero",
+        "stylecop"
+    ],
+    "cSpell.ignorePaths": [
+        "/.gitignore",
+    ],
+    "dotnet.defaultSolution": "Repository.sln", // ← Renombrar para que coincida con la solución
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+}
