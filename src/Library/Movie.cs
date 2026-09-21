@@ -9,7 +9,7 @@ namespace Ucu.Poo.Repositories
     /// <summary>
     /// Esta clase representa una película.
     /// </summary>
-    public class Movie
+    public class Movie : IReadOnlyMovie, ISearchable
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="Movie"/>.

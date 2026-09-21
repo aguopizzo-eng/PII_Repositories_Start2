@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Ucu.Poo.Repositories.Tests
 {
     [TestFixture]
-    public class MoviesCatalogTests
+    public class MoviesCatalogTests 
     {
         private MoviesCatalog catalog;
 
@@ -22,8 +22,17 @@ namespace Ucu.Poo.Repositories.Tests
 
             this.catalog.Add(movie);
 
-            Movie found = this.catalog.Find("Name", "Inception");
+            IReadOnlyMovie found = this.catalog.FindMovie("Name", "Inception");
             Assert.That(found, Is.SameAs(movie));
+        }
+
+        [Test]
+        public void Movies_AfterAddingMovie_ContainsMovie()
+        {
+            Movie movie = new Movie("Inception", 2010);
+            this.catalog.Add(movie);
+
+            Assert.That(this.catalog.Movies, Contains.Item(movie));
         }
 
         [Test]
@@ -31,7 +40,7 @@ namespace Ucu.Poo.Repositories.Tests
         {
             this.catalog.Add(null);
 
-            Movie found = this.catalog.Find("Name", "Inception");
+            IReadOnlyMovie found = this.catalog.FindMovie("Name", "Inception");
             Assert.That(found, Is.Null);
         }
 
@@ -43,7 +52,7 @@ namespace Ucu.Poo.Repositories.Tests
 
             this.catalog.Remove(movie);
 
-            Movie found = this.catalog.Find("Name", "The Matrix");
+            IReadOnlyMovie found = this.catalog.FindMovie("Name", "The Matrix");
             Assert.That(found, Is.Null);
         }
 
@@ -53,7 +62,7 @@ namespace Ucu.Poo.Repositories.Tests
             Movie movie = new Movie("Interstellar", 2014);
             this.catalog.Add(movie);
 
-            Movie found = this.catalog.Find("Year", "2014");
+            IReadOnlyMovie found = this.catalog.FindMovie("Year", "2014");
 
             Assert.That(found, Is.SameAs(movie));
         }
@@ -64,7 +73,7 @@ namespace Ucu.Poo.Repositories.Tests
             Movie movie = new Movie("Dunkirk", 2017);
             this.catalog.Add(movie);
 
-            Movie found = this.catalog.Find("Name", "Tenet");
+            IReadOnlyMovie found = this.catalog.FindMovie("Name", "Tenet");
 
             Assert.That(found, Is.Null);
         }
@@ -72,7 +81,7 @@ namespace Ucu.Poo.Repositories.Tests
         [Test]
         public void Find_EmptyCatalog_ReturnsNull()
         {
-            Movie found = this.catalog.Find("Name", "Inception");
+            IReadOnlyMovie found = this.catalog.FindMovie("Name", "Inception");
 
             Assert.That(found, Is.Null);
         }
@@ -92,7 +101,7 @@ namespace Ucu.Poo.Repositories.Tests
         {
             this.catalog.LoadFromJson("[{\"Name\":\"The Matrix\",\"Year\":1999}]");
 
-            Movie found = this.catalog.Find("Name", "The Matrix");
+            IReadOnlyMovie found = this.catalog.FindMovie("Name", "The Matrix");
 
             Assert.That(found, Is.Not.Null);
             Assert.That(found.Year, Is.EqualTo(1999));
@@ -130,7 +139,7 @@ namespace Ucu.Poo.Repositories.Tests
                 bool loaded = this.catalog.LoadFromFile(filePath);
 
                 Assert.That(loaded, Is.True);
-                Assert.That(this.catalog.Find("Name", "Dunkirk"), Is.Not.Null);
+                Assert.That(this.catalog.FindMovie("Name", "Dunkirk"), Is.Not.Null);
             }
             finally
             {

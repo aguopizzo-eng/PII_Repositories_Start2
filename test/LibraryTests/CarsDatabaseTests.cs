@@ -22,8 +22,17 @@ namespace Ucu.Poo.Repositories.Tests
 
             this.database.Add(car);
 
-            Car found = this.database.Find("Model", "Jimny");
+            IReadOnlyCar found = this.database.FindCar("Model", "Jimny");
             Assert.That(found, Is.SameAs(car));
+        }
+
+        [Test]
+        public void Cars_AfterAddingCar_ContainsCar()
+        {
+            Car car = new Car("Jimny", "Suzuki", 2024);
+            this.database.Add(car);
+
+            Assert.That(this.database.Cars, Contains.Item(car));
         }
 
         [Test]
@@ -31,7 +40,7 @@ namespace Ucu.Poo.Repositories.Tests
         {
             this.database.Add(null);
 
-            Car found = this.database.Find("Model", "Jimny");
+            IReadOnlyCar found = this.database.FindCar("Model", "Jimny");
             Assert.That(found, Is.Null);
         }
 
@@ -43,7 +52,7 @@ namespace Ucu.Poo.Repositories.Tests
 
             this.database.Remove(car);
 
-            Car found = this.database.Find("Maker", "Ford");
+            IReadOnlyCar found = this.database.FindCar("Maker", "Ford");
             Assert.That(found, Is.Null);
         }
 
@@ -53,7 +62,7 @@ namespace Ucu.Poo.Repositories.Tests
             Car car = new Car("Onix", "Chevrolet", 2022);
             this.database.Add(car);
 
-            Car found = this.database.Find("Year", "2022");
+            IReadOnlyCar found = this.database.FindCar("Year", "2022");
 
             Assert.That(found, Is.SameAs(car));
         }
@@ -64,7 +73,7 @@ namespace Ucu.Poo.Repositories.Tests
             Car car = new Car("Sandero", "Renault", 2015);
             this.database.Add(car);
 
-            Car found = this.database.Find("Maker", "Ford");
+            IReadOnlyCar found = this.database.FindCar("Maker", "Ford");
 
             Assert.That(found, Is.Null);
         }
@@ -72,7 +81,7 @@ namespace Ucu.Poo.Repositories.Tests
         [Test]
         public void FindCar_EmptyDatabase_ReturnsNull()
         {
-            Car found = this.database.Find("Model", "Jimny");
+            IReadOnlyCar found = this.database.FindCar("Model", "Jimny");
 
             Assert.That(found, Is.Null);
         }
@@ -92,7 +101,7 @@ namespace Ucu.Poo.Repositories.Tests
         {
             this.database.LoadFromJson("[{\"Model\":\"Focus\",\"Maker\":\"Ford\",\"Year\":2018}]");
 
-            Car found = this.database.Find("Model", "Focus");
+            IReadOnlyCar found = this.database.FindCar("Model", "Focus");
 
             Assert.That(found, Is.Not.Null);
             Assert.That(found.Maker, Is.EqualTo("Ford"));
@@ -130,7 +139,7 @@ namespace Ucu.Poo.Repositories.Tests
                 bool loaded = this.database.LoadFromFile(filePath);
 
                 Assert.That(loaded, Is.True);
-                Assert.That(this.database.Find("Model", "Sandero"), Is.Not.Null);
+                Assert.That(this.database.FindCar("Model", "Sandero"), Is.Not.Null);
             }
             finally
             {
