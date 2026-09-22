@@ -4,6 +4,7 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -15,18 +16,29 @@ namespace Ucu.Poo.Repositories
   /// Esta clase representa un repositorio genérico de elementos.
   /// </summary>
   /// <typeparam name="T">El tipo de los elementos almacenados.</typeparam>
-  public class Repository<T>
-  where T : ISearchable
+  /// <typeparam name="TReadOnly">El tipo de solo lectura que se muestra hacia
+  /// afuera para cada elemento.</typeparam>
+  public class Repository<T, TReadOnly>
+  where T : TReadOnly
+  where TReadOnly : ISearchable
   {
     private List<T> lst = new List<T>();
 
     /// <summary>
-    /// Obtiene los elementos del repositorio en modo solo lectura. Solo es
-    /// accesible para las clases derivadas.
+    /// Obtiene los elementos del repositorio en modo solo lectura.
     /// </summary>
-    protected ReadOnlyCollection<T> Items
+    public ReadOnlyCollection<TReadOnly> Items
     {
-        get { return this.lst.AsReadOnly(); }
+        get
+        {
+            List<TReadOnly> list = new List<TReadOnly>();
+            foreach (TReadOnly element in this.lst)
+            {
+                list.Add(element);
+            }
+
+            return list.AsReadOnly();
+        }
     }
 
     /// <summary>
@@ -52,7 +64,7 @@ namespace Ucu.Poo.Repositories
 
     /// <summary>
     /// Busca un elemento en el repositorio que cumpla con un criterio
-    /// específico. Solo es accesible para las clases derivadas.
+    /// específico.
     /// </summary>
     /// <param name="field">El nombre del atributo por el cual
     /// buscar.</param>
@@ -60,9 +72,9 @@ namespace Ucu.Poo.Repositories
     /// buscar.</param>
     /// <returns>El elemento encontrado que cumple el criterio especificado o
     /// null si no se encuentra ninguno.</returns>
-    protected T Find(string field, string value)
+    public TReadOnly Find(string field, string value)
     {
-        foreach (T item in this.lst)
+        foreach (TReadOnly item in this.lst)
         {
             if (item.HasValue(field, value))
             {
@@ -70,7 +82,7 @@ namespace Ucu.Poo.Repositories
             }
         }
 
-        return default(T);
+        return default(TReadOnly);
     }
 
     /// <summary>

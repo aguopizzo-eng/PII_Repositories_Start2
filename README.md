@@ -30,13 +30,25 @@ para aprender](./COPILOT.md).
 --- 
 ### Notas de Agustín
 
-Antes de la solución, CarsDatabase y MoviesCatalog repetían el mismo código salvo por los tipos que se manipulan dentro de cada una de las clases. 
+1) Antes de la solución, CarsDatabase y MoviesCatalog repetían el mismo código salvo por los tipos que se manipulan dentro de cada una de las clases. 
 
-Además, existía el problema de que la propiedad Cars/Movies exponía la lista de autos/películas de solo lectura, pero los elementos que la lista contiene eran de tipo Car/Movie con propiedades de lectura y escritura, lo que permite modificar los atributos de cada instancia por separado "desde afuera".
+2) Además, charlando con la IA, noté que existía el problema de que la propiedad Cars/Movies exponía la lista de autos/películas (de solo lectura), pero los elementos que la lista contiene eran de tipo Car/Movie con propiedades de lectura y escritura, lo que permite modificar los atributos de cada instancia por separado "desde afuera". Lo mismo sucede con el método Find, que expone un objeto mutable.
 
-Para arreglar este problema de encapsulación creé las interfaces IReadOnlyCar y IReadOnlyMovie que permiten que las clases Car y Movie que las implementan puedan ser vistas como de solo lectura. 
+3) Para arreglar el problema de la repetición de código, creé la clase genérica `Repository` que implementa todos los atributos y métodos que CarsDatabase y MoviesCatalog tenían en común para poder dejar de utilizar dichas clases. 
 
-Además creé la interfaz ISearchable que declara que las clases que la implementen tienen un método HasValue para buscar un objeto según un criterio.
+4) Luego, decidí ir paso más allá, y arreglar el problema de la encapsulación. 
+
+Para esto, por un lado, creé las interfaces IReadOnlyCar y IReadOnlyMovie que permiten que las clases Car y Movie que las implementan puedan ser vistas como de solo lectura. Además creé la interfaz ISearchable que declara que las clases que la implementen tienen un método `HasValue` para buscar un objeto según un criterio.
+
+Por el otro lado, hice que la clase genérica `Repository` requiera dos tipos: `T` y `TReadOnly` con la restricción (`where T : TReadOnly` y `where TReadOnly : ISearchable`). La necesidad de que la clase genérica requiera dos tipos es debido a que deseo que el tipo genérico `T` se sustituya por un tipo de solo lectura cuando se requiera que el mismo se exponga "hacia afuera" (`IReadOnlyCar`/`IReadOnlyMovie`). Y la restricción es debido a que deseo que el tipo de solo lectura responda al método `HasValue`.
+
+Finalmente, para la propiedad `Items`, hice que la misma devuelva una lista con objetos de tipo solo lectura, convirtiendo en todos los objetos de tipo `T` de la lista inicial privada a objetos de tipo `TReadOnly`. Y para el método `Find` declaré que el mismo iba a retornar un elemento de tipo solo lectura a partir de la búsqueda que realice según el criterio en la lista inicial privada.
+
+
+
+ 
+
+
 
 Finalmente creé la clase genérica `Repository<T>` con la restricción (where T : ISearchable) para implementar todas las propiedades y métodos que CarsDatabase y MoviesCatalog tienen en común, y para poder lograr que el método Find compile, ya que utiliza un método HasValue que el objeto genérico (Car y Movie) tiene dentro de sí. 
 

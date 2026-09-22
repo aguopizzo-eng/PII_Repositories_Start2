@@ -10,7 +10,7 @@ namespace Ucu.Poo.Repositories
   /// Esta interfaz representa una película de la que solo se pueden leer los
   /// datos.
   /// </summary>
-  public interface IReadOnlyMovie
+  public interface IReadOnlyMovie : ISearchable
   {
     /// <summary>
     /// Obtiene el nombre de la película.
